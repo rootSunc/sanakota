@@ -1,4 +1,4 @@
-const { query } = require('../database/config');
+const { query } = require('../../config/database');
 
 class Word {
   constructor(data) {
