@@ -10,40 +10,27 @@ const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 5432,
   database: process.env.DB_NAME || 'sanakota_db',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || '',
+  user: process.env.DB_USER || 'sanakota',
+  password: process.env.DB_PASSWORD || 'sanakota123',
 };
 
 async function setupDatabase() {
   console.log('🚀 Setting up Sanakota database...\n');
+  console.log('📋 Configuration:');
+  console.log(`  Host: ${dbConfig.host}`);
+  console.log(`  Port: ${dbConfig.port}`);
+  console.log(`  Database: ${dbConfig.database}`);
+  console.log(`  User: ${dbConfig.user}`);
+  console.log(`  Password: ${dbConfig.password ? '***' : 'NOT SET'}\n`);
 
-  // First, connect to postgres database to create our database
-  const adminConfig = {
-    ...dbConfig,
-    database: 'postgres'
-  };
-
-  const adminPool = new Pool(adminConfig);
+  const pool = new Pool(dbConfig);
 
   try {
-    // Check if database exists
-    const dbExists = await adminPool.query(
-      'SELECT 1 FROM pg_database WHERE datname = $1',
-      [dbConfig.database]
-    );
-
-    if (dbExists.rows.length === 0) {
-      console.log(`📦 Creating database: ${dbConfig.database}`);
-      await adminPool.query(`CREATE DATABASE ${dbConfig.database}`);
-      console.log('✅ Database created successfully');
-    } else {
-      console.log('✅ Database already exists');
-    }
-
-    await adminPool.end();
-
-    // Now connect to our database
-    const pool = new Pool(dbConfig);
+    // Test connection first
+    console.log('🔄 Testing database connection...');
+    const client = await pool.connect();
+    console.log('✅ Database connection successful!');
+    client.release();
 
     // Read and execute schema file
     const schemaPath = path.join(__dirname, '../database/schema/01_create_words_table.sql');
@@ -70,12 +57,18 @@ async function setupDatabase() {
     await pool.end();
     console.log('\n🎉 Database setup completed successfully!');
     console.log('\n📝 Next steps:');
-    console.log('1. Update your .env file with correct database credentials');
-    console.log('2. Start the server: npm run dev');
-    console.log('3. Test the API endpoints');
+    console.log('1. Start the server: npm run dev');
+    console.log('2. Test the API endpoints');
 
   } catch (error) {
     console.error('❌ Database setup failed:', error.message);
+    console.log('\n🔧 Troubleshooting:');
+    console.log('1. Make sure PostgreSQL is running');
+    console.log('2. Verify your .env file has correct credentials');
+    console.log('3. Ensure the sanakota user exists and has proper permissions');
+    console.log('4. Check if the sanakota_db database exists');
+    
+    await pool.end();
     process.exit(1);
   }
 }

@@ -39,6 +39,7 @@ sanakota-backend/
 - Node.js (v14 or higher)
 - PostgreSQL (v12 or higher)
 - npm or yarn
+- Windows Command Prompt (cmd) or PowerShell
 
 ### Installation
 
@@ -52,21 +53,37 @@ sanakota-backend/
    npm install
    ```
 
-3. **Configure environment variables**:
+3. **Create PostgreSQL user and database**:
+   ```cmd
+   psql -h localhost -p 5432 -U postgres -c "CREATE USER sanakota WITH PASSWORD 'sanakota123' CREATEDB;"
+   psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE sanakota_db;"
+   psql -h localhost -p 5432 -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE sanakota_db TO sanakota;"
+   ```
+
+4. **Configure environment variables**:
    ```bash
    cp config.env .env
-   # Edit .env with your database credentials
+   # Edit .env with these database credentials:
+   # DB_USER=sanakota
+   # DB_PASSWORD=sanakota123
    ```
 
-4. **Setup database**:
-   ```bash
-   npm run setup-db
+5. **Setup database schema and data**:
+   ```cmd
+   psql -h localhost -p 5432 -U sanakota -d sanakota_db -f database\schema\01_create_words_table.sql
+   psql -h localhost -p 5432 -U sanakota -d sanakota_db -f database\seeds\01_sample_words.sql
    ```
 
-5. **Start the server**:
+6. **Start the server**:
    ```bash
    npm run dev
    ```
+
+### Alternative: Automated Setup
+
+```bash
+npm run setup-db
+```
 
 ## 🔧 Available Scripts
 
