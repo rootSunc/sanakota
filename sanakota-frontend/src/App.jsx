@@ -5,9 +5,11 @@ import viteLogo from "/vite.svg";
 import WordsListPage from "./pages/WordsListPage";
 import WordDetailPage from "./pages/WordDetailPage";
 import WordCreatePage from "./pages/WordCreatePage";
+import FlashcardsPage from "./pages/FlashcardsPage";
 
 function App() {
   const [count, setCount] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <BrowserRouter>
@@ -46,12 +48,88 @@ function App() {
                 >
                   Words
                 </NavLink>
+                <NavLink
+                  to="/flashcards"
+                  className={({ isActive }) =>
+                    `text-gray-600 hover:text-primary-600 transition-colors ${
+                      isActive ? "font-semibold text-primary-700" : ""
+                    }`
+                  }
+                >
+                  Flashcards
+                </NavLink>
               </nav>
+              <button
+                className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-primary-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-300"
+                aria-label="Toggle menu"
+                onClick={() => setMobileOpen((v) => !v)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </header>
 
         {/* Main Content */}
+        {mobileOpen && (
+          <div className="md:hidden bg-white border-b border-gray-200">
+            <div className="px-4 py-3 space-y-2">
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `block px-2 py-2 rounded ${
+                    isActive
+                      ? "bg-primary-50 text-primary-700"
+                      : "text-gray-700"
+                  } `
+                }
+                onClick={() => setMobileOpen(false)}
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/words"
+                className={({ isActive }) =>
+                  `block px-2 py-2 rounded ${
+                    isActive
+                      ? "bg-primary-50 text-primary-700"
+                      : "text-gray-700"
+                  } `
+                }
+                onClick={() => setMobileOpen(false)}
+              >
+                Words
+              </NavLink>
+              <NavLink
+                to="/flashcards"
+                className={({ isActive }) =>
+                  `block px-2 py-2 rounded ${
+                    isActive
+                      ? "bg-primary-50 text-primary-700"
+                      : "text-gray-700"
+                  } `
+                }
+                onClick={() => setMobileOpen(false)}
+              >
+                Flashcards
+              </NavLink>
+            </div>
+          </div>
+        )}
+
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <Routes>
             <Route
@@ -75,6 +153,7 @@ function App() {
             <Route path="/words" element={<WordsListPage />} />
             <Route path="/words/new" element={<WordCreatePage />} />
             <Route path="/words/:id" element={<WordDetailPage />} />
+            <Route path="/flashcards" element={<FlashcardsPage />} />
           </Routes>
         </main>
 
@@ -82,7 +161,7 @@ function App() {
         <footer className="bg-white border-t border-gray-200 mt-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="text-center text-gray-600">
-              <p>Built with ❤️ using React, Vite, and TailwindCSS</p>
+              <p>Built by ❤️ Chao</p>
             </div>
           </div>
         </footer>

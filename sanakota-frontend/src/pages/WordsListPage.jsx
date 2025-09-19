@@ -149,24 +149,24 @@ export default function WordsListPage() {
       </div>
 
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="card text-center">
-            <div className="text-sm text-gray-500">Total</div>
-            <div className="text-xl font-semibold">{stats.total_words}</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-6 mb-6">
+          <div className="card text-center p-2">
+            <div className="text-[10px] text-gray-500">Total</div>
+            <div className="text-base font-semibold">{stats.total_words}</div>
           </div>
-          <div className="card text-center">
-            <div className="text-sm text-gray-500">POS</div>
-            <div className="text-xl font-semibold">{stats.unique_pos}</div>
+          <div className="card text-center p-2">
+            <div className="text-[10px] text-gray-500">POS</div>
+            <div className="text-base font-semibold">{stats.unique_pos}</div>
           </div>
-          <div className="card text-center">
-            <div className="text-sm text-gray-500">Categories</div>
-            <div className="text-xl font-semibold">
+          <div className="card text-center p-2">
+            <div className="text-[10px] text-gray-500">Categories</div>
+            <div className="text-base font-semibold">
               {stats.unique_categories}
             </div>
           </div>
-          <div className="card text-center hidden md:block">
-            <div className="text-sm text-gray-500">Since</div>
-            <div className="text-xl font-semibold">
+          <div className="card text-center p-2">
+            <div className="text-[10px] text-gray-500">Since</div>
+            <div className="text-base font-semibold">
               {new Date(stats.first_word_date).toLocaleDateString()}
             </div>
           </div>
