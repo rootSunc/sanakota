@@ -1,4 +1,4 @@
-const { query } = require('../../config/database');
+const { query } = require("../../config/database");
 
 class Word {
   constructor(data) {
@@ -17,7 +17,7 @@ class Word {
 
   // Get all words with optional filtering
   static async findAll(filters = {}) {
-    let sql = 'SELECT * FROM words WHERE 1=1';
+    let sql = "SELECT * FROM words WHERE 1=1";
     const params = [];
     let paramCount = 0;
 
@@ -34,6 +34,12 @@ class Word {
       params.push(filters.pos);
     }
 
+    if (filters.translation) {
+      paramCount++;
+      sql += ` AND translation ILIKE $${paramCount}`;
+      params.push(`%${filters.translation}%`);
+    }
+
     if (filters.lexical_category) {
       paramCount++;
       sql += ` AND lexical_category = $${paramCount}`;
@@ -41,7 +47,7 @@ class Word {
     }
 
     // Add ordering
-    sql += ' ORDER BY created_at DESC';
+    sql += " ORDER BY created_at DESC";
 
     // Add pagination
     if (filters.limit) {
@@ -57,30 +63,30 @@ class Word {
     }
 
     const result = await query(sql, params);
-    return result.rows.map(row => new Word(row));
+    return result.rows.map((row) => new Word(row));
   }
 
   // Get a word by ID
   static async findById(id) {
-    const sql = 'SELECT * FROM words WHERE id = $1';
+    const sql = "SELECT * FROM words WHERE id = $1";
     const result = await query(sql, [id]);
-    
+
     if (result.rows.length === 0) {
       return null;
     }
-    
+
     return new Word(result.rows[0]);
   }
 
   // Get a word by lemma
   static async findByLemma(lemma) {
-    const sql = 'SELECT * FROM words WHERE lemma ILIKE $1';
+    const sql = "SELECT * FROM words WHERE lemma ILIKE $1";
     const result = await query(sql, [lemma]);
-    
+
     if (result.rows.length === 0) {
       return null;
     }
-    
+
     return new Word(result.rows[0]);
   }
 
@@ -93,9 +99,9 @@ class Word {
       ORDER BY rank DESC
       LIMIT $2
     `;
-    
+
     const result = await query(sql, [searchTerm, limit]);
-    return result.rows.map(row => new Word(row));
+    return result.rows.map((row) => new Word(row));
   }
 
   // Create a new word
@@ -108,7 +114,7 @@ class Word {
       synonyms = [],
       inflections = {},
       lexical_category,
-      example_sentences = []
+      example_sentences = [],
     } = wordData;
 
     const sql = `
@@ -125,7 +131,7 @@ class Word {
       JSON.stringify(synonyms),
       JSON.stringify(inflections),
       lexical_category,
-      JSON.stringify(example_sentences)
+      JSON.stringify(example_sentences),
     ];
 
     const result = await query(sql, params);
@@ -142,7 +148,7 @@ class Word {
       synonyms,
       inflections,
       lexical_category,
-      example_sentences
+      example_sentences,
     } = updateData;
 
     const sql = `
@@ -168,39 +174,40 @@ class Word {
       inflections ? JSON.stringify(inflections) : null,
       lexical_category,
       example_sentences ? JSON.stringify(example_sentences) : null,
-      this.id
+      this.id,
     ];
 
     const result = await query(sql, params);
-    
+
     if (result.rows.length > 0) {
       // Update the current instance
       Object.assign(this, result.rows[0]);
       return this;
     }
-    
+
     return null;
   }
 
   // Delete a word
   async delete() {
-    const sql = 'DELETE FROM words WHERE id = $1';
+    const sql = "DELETE FROM words WHERE id = $1";
     const result = await query(sql, [this.id]);
     return result.rowCount > 0;
   }
 
   // Get words by part of speech
   static async findByPos(pos) {
-    const sql = 'SELECT * FROM words WHERE pos = $1 ORDER BY lemma';
+    const sql = "SELECT * FROM words WHERE pos = $1 ORDER BY lemma";
     const result = await query(sql, [pos]);
-    return result.rows.map(row => new Word(row));
+    return result.rows.map((row) => new Word(row));
   }
 
   // Get words by lexical category
   static async findByLexicalCategory(category) {
-    const sql = 'SELECT * FROM words WHERE lexical_category = $1 ORDER BY lemma';
+    const sql =
+      "SELECT * FROM words WHERE lexical_category = $1 ORDER BY lemma";
     const result = await query(sql, [category]);
-    return result.rows.map(row => new Word(row));
+    return result.rows.map((row) => new Word(row));
   }
 
   // Get statistics
@@ -214,7 +221,7 @@ class Word {
         MAX(created_at) as last_word_date
       FROM words
     `;
-    
+
     const result = await query(sql);
     return result.rows[0];
   }
@@ -232,7 +239,7 @@ class Word {
       lexical_category: this.lexical_category,
       example_sentences: this.example_sentences,
       created_at: this.created_at,
-      updated_at: this.updated_at
+      updated_at: this.updated_at,
     };
   }
 }

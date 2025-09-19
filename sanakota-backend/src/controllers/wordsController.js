@@ -1,4 +1,4 @@
-const Word = require('../models/Word');
+const Word = require("../models/Word");
 
 class WordsController {
   // Get all words with optional filtering
@@ -7,33 +7,35 @@ class WordsController {
       const {
         lemma,
         pos,
+        translation,
         lexical_category,
         limit = 20,
-        offset = 0
+        offset = 0,
       } = req.query;
 
       const filters = {
         lemma,
         pos,
+        translation,
         lexical_category,
         limit: parseInt(limit),
-        offset: parseInt(offset)
+        offset: parseInt(offset),
       };
 
       const words = await Word.findAll(filters);
-      
+
       res.json({
         success: true,
         data: words,
         count: words.length,
-        filters: filters
+        filters: filters,
       });
     } catch (error) {
-      console.error('Error fetching words:', error);
+      console.error("Error fetching words:", error);
       res.status(500).json({
         success: false,
-        error: 'Failed to fetch words',
-        message: error.message
+        error: "Failed to fetch words",
+        message: error.message,
       });
     }
   }
@@ -46,24 +48,24 @@ class WordsController {
       if (!q) {
         return res.status(400).json({
           success: false,
-          error: 'Search query is required'
+          error: "Search query is required",
         });
       }
 
       const words = await Word.search(q, parseInt(limit));
-      
+
       res.json({
         success: true,
         data: words,
         count: words.length,
-        query: q
+        query: q,
       });
     } catch (error) {
-      console.error('Error searching words:', error);
+      console.error("Error searching words:", error);
       res.status(500).json({
         success: false,
-        error: 'Failed to search words',
-        message: error.message
+        error: "Failed to search words",
+        message: error.message,
       });
     }
   }
@@ -72,17 +74,17 @@ class WordsController {
   static async getStats(req, res) {
     try {
       const stats = await Word.getStats();
-      
+
       res.json({
         success: true,
-        data: stats
+        data: stats,
       });
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error("Error fetching stats:", error);
       res.status(500).json({
         success: false,
-        error: 'Failed to fetch statistics',
-        message: error.message
+        error: "Failed to fetch statistics",
+        message: error.message,
       });
     }
   }
@@ -92,19 +94,19 @@ class WordsController {
     try {
       const { pos } = req.params;
       const words = await Word.findByPos(pos);
-      
+
       res.json({
         success: true,
         data: words,
         count: words.length,
-        pos: pos
+        pos: pos,
       });
     } catch (error) {
-      console.error('Error fetching words by POS:', error);
+      console.error("Error fetching words by POS:", error);
       res.status(500).json({
         success: false,
-        error: 'Failed to fetch words by part of speech',
-        message: error.message
+        error: "Failed to fetch words by part of speech",
+        message: error.message,
       });
     }
   }
@@ -114,19 +116,19 @@ class WordsController {
     try {
       const { category } = req.params;
       const words = await Word.findByLexicalCategory(category);
-      
+
       res.json({
         success: true,
         data: words,
         count: words.length,
-        category: category
+        category: category,
       });
     } catch (error) {
-      console.error('Error fetching words by category:', error);
+      console.error("Error fetching words by category:", error);
       res.status(500).json({
         success: false,
-        error: 'Failed to fetch words by category',
-        message: error.message
+        error: "Failed to fetch words by category",
+        message: error.message,
       });
     }
   }
@@ -136,24 +138,24 @@ class WordsController {
     try {
       const { id } = req.params;
       const word = await Word.findById(id);
-      
+
       if (!word) {
         return res.status(404).json({
           success: false,
-          error: 'Word not found'
+          error: "Word not found",
         });
       }
-      
+
       res.json({
         success: true,
-        data: word
+        data: word,
       });
     } catch (error) {
-      console.error('Error fetching word:', error);
+      console.error("Error fetching word:", error);
       res.status(500).json({
         success: false,
-        error: 'Failed to fetch word',
-        message: error.message
+        error: "Failed to fetch word",
+        message: error.message,
       });
     }
   }
@@ -169,14 +171,14 @@ class WordsController {
         synonyms,
         inflections,
         lexical_category,
-        example_sentences
+        example_sentences,
       } = req.body;
 
       // Validate required fields
       if (!lemma || !pos) {
         return res.status(400).json({
           success: false,
-          error: 'Lemma and part of speech are required'
+          error: "Lemma and part of speech are required",
         });
       }
 
@@ -188,22 +190,22 @@ class WordsController {
         synonyms,
         inflections,
         lexical_category,
-        example_sentences
+        example_sentences,
       };
 
       const word = await Word.create(wordData);
-      
+
       res.status(201).json({
         success: true,
         data: word,
-        message: 'Word created successfully'
+        message: "Word created successfully",
       });
     } catch (error) {
-      console.error('Error creating word:', error);
+      console.error("Error creating word:", error);
       res.status(500).json({
         success: false,
-        error: 'Failed to create word',
-        message: error.message
+        error: "Failed to create word",
+        message: error.message,
       });
     }
   }
@@ -213,34 +215,34 @@ class WordsController {
     try {
       const { id } = req.params;
       const word = await Word.findById(id);
-      
+
       if (!word) {
         return res.status(404).json({
           success: false,
-          error: 'Word not found'
+          error: "Word not found",
         });
       }
 
       const updatedWord = await word.update(req.body);
-      
+
       if (!updatedWord) {
         return res.status(500).json({
           success: false,
-          error: 'Failed to update word'
+          error: "Failed to update word",
         });
       }
-      
+
       res.json({
         success: true,
         data: updatedWord,
-        message: 'Word updated successfully'
+        message: "Word updated successfully",
       });
     } catch (error) {
-      console.error('Error updating word:', error);
+      console.error("Error updating word:", error);
       res.status(500).json({
         success: false,
-        error: 'Failed to update word',
-        message: error.message
+        error: "Failed to update word",
+        message: error.message,
       });
     }
   }
@@ -250,33 +252,33 @@ class WordsController {
     try {
       const { id } = req.params;
       const word = await Word.findById(id);
-      
+
       if (!word) {
         return res.status(404).json({
           success: false,
-          error: 'Word not found'
+          error: "Word not found",
         });
       }
 
       const deleted = await word.delete();
-      
+
       if (!deleted) {
         return res.status(500).json({
           success: false,
-          error: 'Failed to delete word'
+          error: "Failed to delete word",
         });
       }
-      
+
       res.json({
         success: true,
-        message: 'Word deleted successfully'
+        message: "Word deleted successfully",
       });
     } catch (error) {
-      console.error('Error deleting word:', error);
+      console.error("Error deleting word:", error);
       res.status(500).json({
         success: false,
-        error: 'Failed to delete word',
-        message: error.message
+        error: "Failed to delete word",
+        message: error.message,
       });
     }
   }

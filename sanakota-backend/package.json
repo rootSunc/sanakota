@@ -9,10 +9,16 @@
     "setup-db": "node scripts/setup-database.js",
     "reset-db": "node scripts/reset-database.js",
     "import-finnwordnet": "node scripts/import-finnwordnet.js",
+    "generate-inflections": "node scripts/generate-inflections-omorfi.js",
     "test-import-finnwordnet": "node scripts/test-import-finnwordnet.js",
     "test-connection": "node scripts/test-connection.js"
   },
-  "keywords": ["express", "api", "backend", "sanakota"],
+  "keywords": [
+    "express",
+    "api",
+    "backend",
+    "sanakota"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
